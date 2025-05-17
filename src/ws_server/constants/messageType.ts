@@ -8,6 +8,7 @@ export enum GameMessageType {
   TURN = 'turn',
   ATTACK = 'attack',
   FINISH = 'finish',
+  ADD_SHIPS = 'add_ships',
 }
 
 export enum RoomMessageType {

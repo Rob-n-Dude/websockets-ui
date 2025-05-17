@@ -1,10 +1,15 @@
 import {ExtendedWebSocket} from '../models/Socket'
-import {RoomMessageType, UserMessageType} from '../constants/messageType'
+import {
+  GameMessageType,
+  RoomMessageType,
+  UserMessageType,
+} from '../constants/messageType'
 import {db} from '../repository'
 import {ParsedMessage} from '../utils/parse'
 import {createRoom} from './createRoom'
 import {addUserToTheRoom} from './addUserToTheRoom'
 import {login} from './login'
+import {addShips} from './addShips'
 
 export const handleMessage = async (
   parsedMessage: ParsedMessage,
@@ -19,6 +24,8 @@ export const handleMessage = async (
       return await createRoom(parsedMessage, db, ws)
     case RoomMessageType.ADD_USER_TO_ROOM:
       return await addUserToTheRoom(parsedMessage, db, ws)
+    case GameMessageType.ADD_SHIPS:
+      return await addShips(parsedMessage, db, ws)
 
     // case GameMessageType.CREATE_GAME:
     //   return await createGame(parsedMessage, db)

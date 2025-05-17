@@ -1,6 +1,6 @@
 export type ParsedMessage = {
   type: string
-  data: string | object
+  data: unknown
   id: number
 }
 

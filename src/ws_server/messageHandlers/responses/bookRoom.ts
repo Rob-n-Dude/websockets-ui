@@ -1,6 +1,6 @@
 import {singleRoomUpdate} from '../../broadcast/singleRoomUpdate'
 import {ApplicationDB} from '../../repository'
-import { startGame } from './startGame'
+import {createGame} from './createGame'
 
 type UpdateRoomData = {
   roomId: string
@@ -23,6 +23,18 @@ export const bookRoom = async ({roomId, userId, db}: UpdateRoomData) => {
     return
   }
 
+  if (user.room) {
+    const prevUserRoom = await db.room.read(user.room)
+
+    if (!prevUserRoom) {
+      return
+    }
+
+    await db.room.update(user.room, {
+      users: prevUserRoom.users.filter((u) => u !== userId),
+    })
+  }
+
   const roomUsersAfterUpdate = [...room.users, userId]
 
   await db.room.update(roomId, {
@@ -34,7 +46,7 @@ export const bookRoom = async ({roomId, userId, db}: UpdateRoomData) => {
   })
 
   if (roomUsersAfterUpdate.length > 1) {
-    await startGame({roomId, db})
+    await createGame({roomId, db})
   }
 
   return await singleRoomUpdate(db)

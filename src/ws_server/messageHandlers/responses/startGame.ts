@@ -1,32 +1,32 @@
-import {randomUUID} from 'crypto'
-import { GameMessageType } from '../../constants/messageType'
+import {GameMessageType} from '../../constants/messageType'
 import {ApplicationDB} from '../../repository'
-import { sendMessage } from '../../utils/send'
+import {sendMessage} from '../../utils/send'
 
 type StartGameArgs = {
-  roomId: string
   db: ApplicationDB
+  gameId: string
 }
 
-export const startGame = async ({roomId, db}: StartGameArgs) => {
-  const room = await db.room.read(roomId)
+export const startGame = async ({gameId, db}: StartGameArgs) => {
+  const game = await db.game.read(gameId)
 
-  const { users } = room!
+  if (!game) {
+    return
+  }
 
-  const gameId = randomUUID()
-
-  await db.game.create({
-    users,
-    id: gameId,
-  })
-
-  for await (const userId of users) {
+  for await (const userId of game.users) {
     const user = await db.user.read(userId)
-    const data = {
-      isGame: gameId,
-      idPlayer: userId,
+    if (!user) {
+      return
     }
 
-    await user?.ws.send(JSON.stringify(sendMessage(GameMessageType.CREATE_GAME, data)))
+    const data = {
+      ships: game.ships[userId],
+      currentPlayerIndex: game.currentPlayer,
+    }
+
+    await user.ws.send(
+      JSON.stringify(sendMessage(GameMessageType.START_GAME, data))
+    )
   }
 }
