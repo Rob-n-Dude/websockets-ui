@@ -10,6 +10,17 @@ export interface Game {
 
 export type ShipType = 'huge' | 'large' | 'medium' | 'small'
 
+export enum AttackResult {
+  HIT = 'hit',
+  MISS = 'miss',
+  KILL = 'kill',
+}
+
+export enum AttackResponseStatus {
+  MISS = 'miss',
+  KILLED = 'killed',
+  SHOT = 'shot',
+}
 export interface Ship {
   position: {
     x: number

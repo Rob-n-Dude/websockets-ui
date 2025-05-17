@@ -1,4 +1,4 @@
-import {Ship} from './Game'
+import {AttackResult, Ship} from './Game'
 
 export type Board = string[][]
 
@@ -12,7 +12,7 @@ enum BoardCell {
 export const getEmptyBoard = (boardSize = 10): Board =>
   Array.from({length: boardSize}, () => Array(boardSize).fill(BoardCell.EMPTY))
 
-export const isEmpty = (board: Board): boolean => {
+export const isBoardEmpty = (board: Board): boolean => {
   return board.every((row) => row.every((cell) => cell === BoardCell.EMPTY))
 }
 
@@ -32,4 +32,45 @@ export const getBoardWithShips = (board: Board, ships: Ship[]): Board => {
   })
 
   return newBoard
+}
+
+export const getBoardAfterShot = (
+  shotResult: AttackResult,
+  board: Board,
+  position: {x: number; y: number}
+) => {
+  const marker =
+    shotResult === AttackResult.MISS ? BoardCell.MISS : BoardCell.HIT
+
+  const newBoard = board.map((row) => [...row])
+
+  newBoard![position.y]![position.x] = marker
+
+  return newBoard
+}
+
+export const canShootAtCell = (board: Board, x: number, y: number): boolean => {
+  if (board[y] === undefined) {
+    return false
+  }
+
+  if (board[y][x] === undefined) {
+    return false
+  }
+
+  return board[y][x] === BoardCell.EMPTY || board[y][x] === BoardCell.SHIP
+}
+
+export const getAttackResult = (
+  board: Board,
+  x: number,
+  y: number
+): AttackResult => {
+  const cell = board![y]![x]
+
+  if (cell === BoardCell.SHIP) {
+    return AttackResult.HIT
+  }
+
+  return AttackResult.MISS
 }

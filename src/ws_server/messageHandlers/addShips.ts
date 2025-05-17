@@ -2,7 +2,7 @@ import {ApplicationDB} from '../repository'
 import {ParsedMessage} from '../utils/parse'
 import {ExtendedWebSocket} from '../models/Socket'
 import {Ship} from '../models/Game'
-import {getBoardWithShips, isEmpty} from '../models/Board'
+import {getBoardWithShips, isBoardEmpty} from '../models/Board'
 import {startGame} from './responses/startGame'
 
 type dataType = {
@@ -47,7 +47,7 @@ export const addShips = async (
     },
   })
 
-  if (Object.values(updatedBoards).every((board) => !isEmpty(board))) {
+  if (Object.values(updatedBoards).every((board) => !isBoardEmpty(board))) {
     await startGame({
       db,
       gameId,
