@@ -1,9 +1,5 @@
+import {Room} from '../models/Room'
 import {Repository} from './repository'
-
-export type Room = {
-  id: string
-  users: string[]
-}
 
 export type RoomRepositoryType = Repository<Room>
 

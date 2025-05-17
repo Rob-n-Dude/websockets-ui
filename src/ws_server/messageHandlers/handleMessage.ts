@@ -3,7 +3,8 @@ import {RoomMessageType, UserMessageType} from '../constants/messageType'
 import {db} from '../repository'
 import {ParsedMessage} from '../utils/parse'
 import {createRoom} from './createRoom'
-import {register} from './register'
+import {addUserToTheRoom} from './addUserToTheRoom'
+import {login} from './login'
 
 export const handleMessage = async (
   parsedMessage: ParsedMessage,
@@ -13,9 +14,11 @@ export const handleMessage = async (
 
   switch (type) {
     case UserMessageType.REGISTER:
-      return await register(parsedMessage, db, ws)
+      return await login(parsedMessage, db, ws)
     case RoomMessageType.CREATE_ROOM:
       return await createRoom(parsedMessage, db, ws)
+    case RoomMessageType.ADD_USER_TO_ROOM:
+      return await addUserToTheRoom(parsedMessage, db, ws)
 
     // case GameMessageType.CREATE_GAME:
     //   return await createGame(parsedMessage, db)

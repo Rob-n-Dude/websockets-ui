@@ -17,9 +17,7 @@ export const sendToAllUsers = async (
   message: object | string
 ) => {
   const users = await db.user.getAll()
-  console.log('users', users)
   for await (const user of users) {
-    console.log('mewssage', message)
     user.ws.send(JSON.stringify(sendMessage(type, message)))
   }
 }

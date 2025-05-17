@@ -1,7 +1,7 @@
 import {randomUUID} from 'node:crypto'
 import {ApplicationDB} from '../repository'
 import {ParsedMessage} from '../utils/parse'
-import {User} from '../models/user'
+import {User} from '../models/User'
 import {ExtendedWebSocket} from '../models/Socket'
 import {sendMessage} from '..//utils/send'
 
@@ -34,5 +34,5 @@ export const register = async (
     error: false,
   }
 
-  return sendMessage(message.type, sanitizedData)
+  await ws.send(JSON.stringify(sendMessage(message.type, sanitizedData)))
 }

@@ -15,13 +15,7 @@ export const createWebSocketServer = (port: number) => {
       const parsedMessage = parse(message)
       console.log('Received message:', parsedMessage)
 
-      const result = await handleMessage(
-        parsedMessage,
-        ws as unknown as ExtendedWebSocket
-      )
-
-      console.log('Sending response:', result)
-      ws.send(JSON.stringify(result))
+      await handleMessage(parsedMessage, ws as unknown as ExtendedWebSocket)
     })
 
     ws.on('close', () => {
