@@ -107,17 +107,24 @@ const handleMiss = async (
       [opponentId]: getBoardAfterShot(AttackResult.MISS, targetBoard, position),
     },
   })
-  const user = await db.user.read(currentPlayer)!
 
-  const resultData = {
+    const resultData = {
     position,
     currentPlayer,
     status: AttackResponseStatus.MISS,
   }
 
-  await user?.ws.send(
-    JSON.stringify(sendMessage(GameMessageType.ATTACK, resultData))
-  )
+  for await (const player of game.users) {
+    const user = await db.user.read(player)!
+
+    if (!user) {
+      continue
+    }
+
+    user?.ws.send(
+      JSON.stringify(sendMessage(GameMessageType.ATTACK, resultData))
+    )
+  }
 }
 
 const handleHit = async (
@@ -141,17 +148,23 @@ const handleHit = async (
     },
   })
 
-  const user = await db.user.read(currentPlayer)!
-
   const resultData = {
     position,
     currentPlayer,
     status: AttackResponseStatus.SHOT,
   }
 
-  await user?.ws.send(
-    JSON.stringify(sendMessage(GameMessageType.ATTACK, resultData))
-  )
+  for await (const player of game.users) {
+    const user = await db.user.read(player)!
+
+    if (!user) {
+      continue
+    }
+
+    user?.ws.send(
+      JSON.stringify(sendMessage(GameMessageType.ATTACK, resultData))
+    )
+  }
 }
 
 const handleKill = async (
@@ -177,17 +190,24 @@ const handleKill = async (
 
   const nearbyCells = getNearbyCells(game.boards[opponentId]!, targetShip)
 
-  const user = await db.user.read(currentPlayer)!
-
   const resultData = {
     position,
     currentPlayer,
     status: AttackResponseStatus.KILLED,
   }
 
-  await user?.ws.send(
-    JSON.stringify(sendMessage(GameMessageType.ATTACK, resultData))
-  )
+
+  for await (const player of game.users) {
+    const user = await db.user.read(player)!
+    
+    if (!user) {
+      continue
+    }
+
+    user?.ws.send(
+      JSON.stringify(sendMessage(GameMessageType.ATTACK, resultData))
+    )
+  }
 
   for (const cell of nearbyCells) {
     const {x, y} = cell
@@ -198,9 +218,17 @@ const handleKill = async (
       status: AttackResponseStatus.MISS,
     }
 
-    await user?.ws.send(
-      JSON.stringify(sendMessage(GameMessageType.ATTACK, resultData))
-    )
+    for await (const player of game.users) {
+      const user = await db.user.read(player)!
+      
+      if (!user) {
+        continue
+      }
+
+      user?.ws.send(
+        JSON.stringify(sendMessage(GameMessageType.ATTACK, resultData))
+      )
+    }
   }
 
   const boardAfterNearbyMisses = nearbyCells.reduce((acc, cell) => {
