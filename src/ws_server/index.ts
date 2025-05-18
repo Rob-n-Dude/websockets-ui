@@ -1,11 +1,11 @@
-import {WebSocket} from 'ws'
+import {WebSocket, WebSocketServer} from 'ws'
 import {parse} from './utils/parse'
 import {ExtendedWebSocket} from './models/Socket'
 import {handleMessage} from './messageHandlers/handleMessage'
 import {handleUserDisconnect} from './messageHandlers/handleDisconnect'
 
 export const createWebSocketServer = (port: number) => {
-  const wsServer = new WebSocket.Server({
+  const wsServer = new WebSocketServer({
     port,
   })
 

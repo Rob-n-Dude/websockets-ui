@@ -17,3 +17,6 @@ npm-debug.log
 
 # Envs
 .env
+
+# build
+dist

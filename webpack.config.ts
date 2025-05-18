@@ -20,4 +20,8 @@ module.exports = {
     filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist'),
   },
+  externals: {
+    "bufferutil": "commonjs bufferutil",
+    "utf-8-validate": "commonjs utf-8-validate",
+  },
 }

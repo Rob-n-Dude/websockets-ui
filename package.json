@@ -4,7 +4,7 @@
   "description": "Template for the WebSocket remote control task",
   "main": "index.ts",
   "scripts": {
-    "start": "webpack && node dist/index.ts",
+    "start": "webpack && node dist/main.bundle.js",
     "start:dev": "npx nodemon --config nodemon.json",
     "format": "prettier --write src/**/*.ts",
     "lint": "eslint . --ext .ts",

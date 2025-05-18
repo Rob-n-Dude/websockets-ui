@@ -14,7 +14,10 @@ export const createRoom = async (
   const user = await db.user.read(userId)
 
   if (user?.room) {
-    return
+    await db.room.delete(user.room)
+    await db.user.update(userId, {
+      room: null,
+    })
   }
 
   const id = randomUUID()
