@@ -252,7 +252,7 @@ const handleKill = async (
   const areShipsDestroyed = areAllShipsDestroyed(boardAfterNearbyMisses)
 
   if (areShipsDestroyed) {
-    return await finishGame(db, gameId)
+    return await finishGame(db, gameId, game.currentPlayer)
   }
 }
 

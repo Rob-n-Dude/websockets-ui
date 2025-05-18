@@ -1,21 +1,28 @@
 import {sendMessage} from '../../utils/send'
 import {ApplicationDB} from '../../repository'
 import {GameMessageType} from '../../constants/messageType'
-import {updateWinners} from './updateWinners'
+import {updateWinners} from '../../broadcast/updateWinners'
 
-export const finishGame = async (db: ApplicationDB, gameId: string) => {
+export const finishGame = async (
+  db: ApplicationDB,
+  gameId: string,
+  winnerId: string
+) => {
   const game = await db.game.read(gameId)
 
   if (!game) {
     return
   }
 
-  const winnerId = game.currentPlayer
-
   const data = {
     winPlayer: winnerId,
   }
 
+  const user = await db.user.read(winnerId)
+
+  if (user && user.gameId && user.room) {
+    await Promise.all([db.game.delete(user.gameId), db.room.delete(user.room)])
+  }
   const winner = await db.winner.read(winnerId)
 
   if (!winner) {

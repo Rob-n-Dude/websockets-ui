@@ -3,7 +3,7 @@ import {ApplicationDB} from '../repository'
 import {ParsedMessage} from '../utils/parse'
 import {register} from './register'
 import {singleRoomUpdate} from '../broadcast/singleRoomUpdate'
-import {updateWinners} from './responses/updateWinners'
+import {updateWinners} from '../broadcast/updateWinners'
 
 export const login = async (
   message: ParsedMessage,

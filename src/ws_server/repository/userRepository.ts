@@ -5,7 +5,7 @@ type UserRepositoryStorage = {
   [key: string]: User
 }
 
-export type UserRepositoryType = Omit<Repository<User>, 'delete'>
+export type UserRepositoryType = Repository<User>
 
 class UserRepository implements UserRepositoryType {
   private users: UserRepositoryStorage = {}
@@ -54,6 +54,18 @@ class UserRepository implements UserRepositoryType {
       })
 
       resolve(users)
+    })
+  }
+
+  delete(id: string): Promise<boolean> {
+    return new Promise((resolve) => {
+      if (!this.users[id]) {
+        resolve(false)
+        return
+      }
+
+      delete this.users[id]
+      resolve(true)
     })
   }
 }

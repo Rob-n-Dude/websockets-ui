@@ -32,19 +32,6 @@ export const handleMessage = async (
       return await attack(parsedMessage, db)
     case GameMessageType.RANDOM_ATTACK:
       return await randomAttack(parsedMessage, db)
-    // case GameMessageType.CREATE_GAME:
-    //   return await createGame(parsedMessage, db)
-    // case GameMessageType.START_GAME:
-    //   return await startGame(parsedMessage, db)
-    // case GameMessageType.TURN:
-    //   return await turn(parsedMessage, db)
-
-    // case GameMessageType.FINISH:
-    //   return await finish(parsedMessage, db)
-    // case RoomMessageType.UPDATE_ROOM:
-    //   return await updateRoom(parsedMessage, db)
-    // case RoomMessageType.UPDATE_WINNERS:
-    //   return await updateWinners(parsedMessage, db)
     default:
       throw new Error(`Unknown message type: ${type}`)
   }

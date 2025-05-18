@@ -2,6 +2,7 @@ import {WebSocket} from 'ws'
 import {parse} from './utils/parse'
 import {ExtendedWebSocket} from './models/Socket'
 import {handleMessage} from './messageHandlers/handleMessage'
+import {handleUserDisconnect} from './messageHandlers/handleDisconnect'
 
 export const createWebSocketServer = (port: number) => {
   const wsServer = new WebSocket.Server({
@@ -18,8 +19,9 @@ export const createWebSocketServer = (port: number) => {
       await handleMessage(parsedMessage, ws as unknown as ExtendedWebSocket)
     })
 
-    ws.on('close', () => {
+    ws.on('close', async () => {
       console.log('Client disconnected')
+      await handleUserDisconnect(ws as unknown as ExtendedWebSocket)
     })
   })
 

@@ -4,7 +4,7 @@ import {Repository} from './repository'
 export type RoomRepositoryType = Repository<Room>
 
 class RoomRepository implements RoomRepositoryType {
-  private rooms: Map<string, unknown>
+  private rooms: Map<string, Room>
 
   constructor() {
     this.rooms = new Map()
