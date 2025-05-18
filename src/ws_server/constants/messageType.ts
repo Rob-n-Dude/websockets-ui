@@ -10,11 +10,11 @@ export enum GameMessageType {
   RANDOM_ATTACK = 'randomAttack',
   FINISH = 'finish',
   ADD_SHIPS = 'add_ships',
+  UPDATE_WINNERS = 'update_winners',
 }
 
 export enum RoomMessageType {
   CREATE_ROOM = 'create_room',
   ADD_USER_TO_ROOM = 'add_user_to_room',
   UPDATE_ROOM = 'update_room',
-  UPDATE_WINNERS = 'update_winners',
 }

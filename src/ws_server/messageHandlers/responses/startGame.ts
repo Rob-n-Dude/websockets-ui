@@ -26,9 +26,7 @@ export const startGame = async ({gameId, db}: StartGameArgs) => {
       currentPlayerIndex: game.currentPlayer,
     }
 
-    user.ws.send(
-      JSON.stringify(sendMessage(GameMessageType.START_GAME, data))
-    )
+    user.ws.send(JSON.stringify(sendMessage(GameMessageType.START_GAME, data)))
 
     await turn({
       db,

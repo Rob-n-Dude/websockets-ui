@@ -3,6 +3,7 @@ import {ApplicationDB} from '../repository'
 import {ParsedMessage} from '../utils/parse'
 import {register} from './register'
 import {singleRoomUpdate} from '../broadcast/singleRoomUpdate'
+import {updateWinners} from './responses/updateWinners'
 
 export const login = async (
   message: ParsedMessage,
@@ -11,4 +12,5 @@ export const login = async (
 ) => {
   await register(message, db, ws)
   await singleRoomUpdate(db)
+  await updateWinners(db)
 }

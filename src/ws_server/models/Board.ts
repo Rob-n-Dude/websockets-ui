@@ -154,3 +154,7 @@ export const getRandomNotTouchedCell = (
 
   return cells[randomIndex]!
 }
+
+export const areAllShipsDestroyed = (board: Board): boolean => {
+  return board.every((row) => row.every((cell) => cell !== BoardCell.SHIP))
+}

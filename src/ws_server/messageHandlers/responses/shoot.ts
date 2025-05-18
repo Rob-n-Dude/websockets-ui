@@ -1,4 +1,5 @@
 import {
+  areAllShipsDestroyed,
   Board,
   getAttackResult,
   getBoardAfterShot,
@@ -14,6 +15,7 @@ import {
 import {ApplicationDB} from '../../repository'
 import {sendMessage} from '../../utils/send'
 import {GameMessageType} from '../../constants/messageType'
+import {finishGame} from './finishGame'
 
 type ShootArgs = {
   db: ApplicationDB
@@ -108,7 +110,7 @@ const handleMiss = async (
     },
   })
 
-    const resultData = {
+  const resultData = {
     position,
     currentPlayer,
     status: AttackResponseStatus.MISS,
@@ -181,14 +183,17 @@ const handleKill = async (
     return
   }
 
+  const boardAfterShot = getBoardAfterShot(
+    AttackResult.KILL,
+    targetBoard,
+    position
+  )
   await db.game.update(gameId, {
     boards: {
       ...game.boards,
-      [opponentId]: getBoardAfterShot(AttackResult.KILL, targetBoard, position),
+      [opponentId]: boardAfterShot,
     },
   })
-
-  const nearbyCells = getNearbyCells(game.boards[opponentId]!, targetShip)
 
   const resultData = {
     position,
@@ -196,10 +201,9 @@ const handleKill = async (
     status: AttackResponseStatus.KILLED,
   }
 
-
   for (const player of game.users) {
     const user = await db.user.read(player)!
-    
+
     if (!user) {
       continue
     }
@@ -208,6 +212,8 @@ const handleKill = async (
       JSON.stringify(sendMessage(GameMessageType.ATTACK, resultData))
     )
   }
+
+  const nearbyCells = getNearbyCells(boardAfterShot, targetShip)
 
   for (const cell of nearbyCells) {
     const {x, y} = cell
@@ -220,7 +226,7 @@ const handleKill = async (
 
     for (const player of game.users) {
       const user = await db.user.read(player)!
-      
+
       if (!user) {
         continue
       }
@@ -234,7 +240,7 @@ const handleKill = async (
   const boardAfterNearbyMisses = nearbyCells.reduce((acc, cell) => {
     acc = getBoardAfterShot(AttackResult.KILL, acc, cell)
     return acc
-  }, targetBoard)
+  }, boardAfterShot)
 
   await db.game.update(gameId, {
     boards: {
@@ -242,6 +248,12 @@ const handleKill = async (
       [opponentId]: boardAfterNearbyMisses,
     },
   })
+
+  const areShipsDestroyed = areAllShipsDestroyed(boardAfterNearbyMisses)
+
+  if (areShipsDestroyed) {
+    return await finishGame(db, gameId)
+  }
 }
 
 const switchTurn = async (
