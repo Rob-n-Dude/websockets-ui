@@ -1,19 +1,21 @@
-import {canShootAtCell} from '../models/Board'
+import {getRandomNotTouchedCell} from '../models/Board'
 import {ApplicationDB} from '../repository'
 import {ParsedMessage} from '../utils/parse'
 import {shoot} from './responses/shoot'
 import {turn} from './responses/turn'
 
-type AttackDataType = {
-  x: number
-  y: number
+type randomAttackDataType = {
   indexPlayer: string
 }
 
-export const attack = async (message: ParsedMessage, db: ApplicationDB) => {
-  const {x, y, indexPlayer} = message.data as AttackDataType
+export const randomAttack = async (
+  message: ParsedMessage,
+  db: ApplicationDB
+) => {
+  const {indexPlayer} = message.data as randomAttackDataType
 
   const user = await db.user.read(indexPlayer)
+
   if (!user || !user.gameId) {
     return
   }
@@ -24,9 +26,7 @@ export const attack = async (message: ParsedMessage, db: ApplicationDB) => {
     return
   }
 
-  const currentPlayer = game.currentPlayer
-
-  if (indexPlayer !== currentPlayer) {
+  if (game.currentPlayer !== indexPlayer) {
     return
   }
 
@@ -34,20 +34,11 @@ export const attack = async (message: ParsedMessage, db: ApplicationDB) => {
     ([key]) => key !== indexPlayer
   )!
 
-  const canShoot = canShootAtCell(targetBoard, x, y)
-
-  if (!canShoot) {
-    return
-  }
-
-  const position = {
-    x,
-    y,
-  }
+  const targetCell = getRandomNotTouchedCell(targetBoard)
 
   await shoot({
     db,
-    position,
+    position: targetCell,
     gameId: user.gameId,
   })
 

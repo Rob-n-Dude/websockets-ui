@@ -14,7 +14,6 @@ import {
 import {ApplicationDB} from '../../repository'
 import {sendMessage} from '../../utils/send'
 import {GameMessageType} from '../../constants/messageType'
-import {turn} from './turn'
 
 type ShootArgs = {
   db: ApplicationDB
@@ -50,10 +49,6 @@ export const shoot = async ({db, position, gameId}: ShootArgs) => {
       position
     )
     await switchTurn(db, gameId, opponentId)
-    await turn({
-      db,
-      gameId,
-    })
 
     return
   }

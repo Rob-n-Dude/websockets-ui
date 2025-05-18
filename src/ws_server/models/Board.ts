@@ -136,3 +136,21 @@ export const getNearbyCells = (board: Board, ship: Ship) => {
 
   return cells
 }
+
+export const getRandomNotTouchedCell = (
+  board: Board
+): {x: number; y: number} => {
+  const cells: {x: number; y: number}[] = []
+
+  board.forEach((row, y) => {
+    row.forEach((cell, x) => {
+      if (cell === BoardCell.EMPTY || cell === BoardCell.SHIP) {
+        cells.push({x, y})
+      }
+    })
+  })
+
+  const randomIndex = Math.round(Math.random() * (cells.length - 1))
+
+  return cells[randomIndex]!
+}

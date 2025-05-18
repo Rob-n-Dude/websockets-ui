@@ -7,6 +7,7 @@ export enum GameMessageType {
   START_GAME = 'start_game',
   TURN = 'turn',
   ATTACK = 'attack',
+  RANDOM_ATTACK = 'randomAttack',
   FINISH = 'finish',
   ADD_SHIPS = 'add_ships',
 }

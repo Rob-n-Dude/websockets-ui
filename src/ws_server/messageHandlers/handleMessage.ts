@@ -11,6 +11,7 @@ import {addUserToTheRoom} from './addUserToTheRoom'
 import {login} from './login'
 import {addShips} from './addShips'
 import {attack} from './attack'
+import {randomAttack} from './randomAttack'
 
 export const handleMessage = async (
   parsedMessage: ParsedMessage,
@@ -29,6 +30,8 @@ export const handleMessage = async (
       return await addShips(parsedMessage, db)
     case GameMessageType.ATTACK:
       return await attack(parsedMessage, db)
+    case GameMessageType.RANDOM_ATTACK:
+      return await randomAttack(parsedMessage, db)
     // case GameMessageType.CREATE_GAME:
     //   return await createGame(parsedMessage, db)
     // case GameMessageType.START_GAME:
