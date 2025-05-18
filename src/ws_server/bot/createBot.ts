@@ -6,7 +6,10 @@ import {createRoom} from '../messageHandlers/createRoom'
 import {createSocket} from './createSocket'
 import {Event} from './Event'
 
-export const createBot = async (db: ApplicationDB, ws: ExtendedWebSocket) => {
+export const createBot = async (
+  db: ApplicationDB,
+  ws: ExtendedWebSocket
+): Promise<void> => {
   const socket = await createSocket()
 
   let bot = new Bot(socket)

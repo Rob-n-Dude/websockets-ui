@@ -27,7 +27,7 @@ type ShootArgs = {
 }
 
 export const shoot = async ({db, position, gameId}: ShootArgs) => {
-  const game = await db.game.read(gameId)!
+  const game = await db.game.read(gameId)
 
   if (!game) {
     return
@@ -97,7 +97,7 @@ const handleMiss = async (
   targetBoard: Board,
   position: {x: number; y: number}
 ) => {
-  const game = await db.game.read(gameId)!
+  const game = await db.game.read(gameId)
 
   if (!game) {
     return
@@ -117,7 +117,7 @@ const handleMiss = async (
   }
 
   for (const player of game.users) {
-    const user = await db.user.read(player)!
+    const user = await db.user.read(player)
 
     if (!user) {
       continue
@@ -137,7 +137,7 @@ const handleHit = async (
   targetBoard: Board,
   position: {x: number; y: number}
 ) => {
-  const game = await db.game.read(gameId)!
+  const game = await db.game.read(gameId)
 
   if (!game) {
     return
@@ -157,7 +157,7 @@ const handleHit = async (
   }
 
   for (const player of game.users) {
-    const user = await db.user.read(player)!
+    const user = await db.user.read(player)
 
     if (!user) {
       continue
@@ -178,7 +178,7 @@ const handleKill = async (
   position: {x: number; y: number},
   targetShip: Ship
 ) => {
-  const game = await db.game.read(gameId)!
+  const game = await db.game.read(gameId)
   if (!game) {
     return
   }
@@ -202,7 +202,7 @@ const handleKill = async (
   }
 
   for (const player of game.users) {
-    const user = await db.user.read(player)!
+    const user = await db.user.read(player)
 
     if (!user) {
       continue
@@ -225,7 +225,7 @@ const handleKill = async (
     }
 
     for (const player of game.users) {
-      const user = await db.user.read(player)!
+      const user = await db.user.read(player)
 
       if (!user) {
         continue

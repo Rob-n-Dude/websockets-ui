@@ -52,7 +52,7 @@ export class Bot extends EventEmitter {
   }
 
   private send(type: string, message: object | string) {
-    this.socket!.send(JSON.stringify(sendMessage(type, message)))
+    this.socket.send(JSON.stringify(sendMessage(type, message)))
   }
 
   public requestRegister() {

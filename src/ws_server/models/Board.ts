@@ -28,7 +28,7 @@ export const getBoardWithShips = (board: Board, ships: Ship[]): Board => {
       const row = direction ? y + i : y
       const col = direction ? x : x + i
 
-      newBoard![row]![col] = BoardCell.SHIP
+      newBoard[row]![col] = BoardCell.SHIP
     }
   })
 
@@ -45,7 +45,7 @@ export const getBoardAfterShot = (
 
   const newBoard = board.map((row) => [...row])
 
-  newBoard![position.y]![position.x] = marker
+  newBoard[position.y]![position.x] = marker
 
   return newBoard
 }
@@ -67,7 +67,7 @@ export const getAttackResult = (
   x: number,
   y: number
 ): AttackResult => {
-  const cell = board![y]![x]
+  const cell = board[y]![x]
 
   if (cell === BoardCell.SHIP) {
     return AttackResult.HIT
@@ -114,16 +114,19 @@ export const isShipKilled = (
 export const getNearbyCells = (board: Board, ship: Ship) => {
   const boardSize = board.length
 
+  const shipDeltaX = ship.direction ? 1 : ship.length
+  const shipDeltaY = ship.direction ? ship.length : 1
+
   const minX = ship.position.x - 1 <= 0 ? 0 : ship.position.x - 1
   const minY = ship.position.y - 1 <= 0 ? 0 : ship.position.y - 1
   const maxX =
-    ship.position.x + (ship.direction ? 1 : ship.length) >= boardSize
+    ship.position.x + shipDeltaX >= boardSize
       ? boardSize - 1
-      : ship.position.x + (ship.direction ? 1 : ship.length)
+      : ship.position.x + shipDeltaX
   const maxY =
-    ship.position.y + (ship.direction ? ship.length : 1) >= boardSize
+    ship.position.y + shipDeltaY >= boardSize
       ? boardSize - 1
-      : ship.position.y + (ship.direction ? ship.length : 1)
+      : ship.position.y + shipDeltaY
 
   const cells = []
 

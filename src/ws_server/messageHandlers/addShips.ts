@@ -14,7 +14,7 @@ export const addShips = async (message: ParsedMessage, db: ApplicationDB) => {
 
   const user = await db.user.read(indexPlayer)
 
-  if (!user || !user.gameId) {
+  if (!user?.gameId) {
     return
   }
 
