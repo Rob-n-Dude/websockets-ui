@@ -1,5 +1,16 @@
-import {getAttackResult, getBoardAfterShot} from '../../models/Board'
-import {AttackResponseStatus, AttackResult} from '../../models/Game'
+import {
+  Board,
+  getAttackResult,
+  getBoardAfterShot,
+  getNearbyCells,
+  isShipKilled,
+} from '../../models/Board'
+import {
+  AttackResponseStatus,
+  AttackResult,
+  getShipByCoordinates,
+  Ship,
+} from '../../models/Game'
 import {ApplicationDB} from '../../repository'
 import {sendMessage} from '../../utils/send'
 import {GameMessageType} from '../../constants/messageType'
@@ -29,28 +40,16 @@ export const shoot = async ({db, position, gameId}: ShootArgs) => {
 
   const attackResult = getAttackResult(targetBoard, x, y)
 
-  const resultData = {
-    position,
-    currentPlayer,
-    status: '',
-  }
-
   if (attackResult === AttackResult.MISS) {
-    resultData.status = AttackResponseStatus.MISS
-
-    await db.game.update(game.id, {
-      boards: {
-        ...game.boards,
-        [opponentId]: getBoardAfterShot(attackResult, targetBoard, {x, y}),
-      },
-      currentPlayer: opponentId,
-    })
-
-    const user = await db.user.read(currentPlayer)!
-    await user?.ws.send(
-      JSON.stringify(sendMessage(GameMessageType.ATTACK, resultData))
+    await handleMiss(
+      db,
+      gameId,
+      currentPlayer,
+      opponentId,
+      targetBoard,
+      position
     )
-
+    await switchTurn(db, gameId, opponentId)
     await turn({
       db,
       gameId,
@@ -58,4 +57,176 @@ export const shoot = async ({db, position, gameId}: ShootArgs) => {
 
     return
   }
+
+  const ships = game.ships[opponentId] as unknown as Ship[]
+
+  const targetShip = getShipByCoordinates(ships, position)
+
+  if (!targetShip) {
+    return
+  }
+
+  const isKilled = isShipKilled(targetBoard, position, targetShip)
+
+  if (!isKilled) {
+    await handleHit(
+      db,
+      gameId,
+      currentPlayer,
+      opponentId,
+      targetBoard,
+      position
+    )
+
+    return
+  }
+
+  await handleKill(
+    db,
+    gameId,
+    currentPlayer,
+    opponentId,
+    targetBoard,
+    position,
+    targetShip
+  )
+}
+
+const handleMiss = async (
+  db: ApplicationDB,
+  gameId: string,
+  currentPlayer: string,
+  opponentId: string,
+  targetBoard: Board,
+  position: {x: number; y: number}
+) => {
+  const game = await db.game.read(gameId)!
+
+  if (!game) {
+    return
+  }
+
+  await db.game.update(gameId, {
+    boards: {
+      ...game.boards,
+      [opponentId]: getBoardAfterShot(AttackResult.MISS, targetBoard, position),
+    },
+  })
+  const user = await db.user.read(currentPlayer)!
+
+  const resultData = {
+    position,
+    currentPlayer,
+    status: AttackResponseStatus.MISS,
+  }
+
+  await user?.ws.send(
+    JSON.stringify(sendMessage(GameMessageType.ATTACK, resultData))
+  )
+}
+
+const handleHit = async (
+  db: ApplicationDB,
+  gameId: string,
+  currentPlayer: string,
+  opponentId: string,
+  targetBoard: Board,
+  position: {x: number; y: number}
+) => {
+  const game = await db.game.read(gameId)!
+
+  if (!game) {
+    return
+  }
+
+  await db.game.update(gameId, {
+    boards: {
+      ...game.boards,
+      [opponentId]: getBoardAfterShot(AttackResult.HIT, targetBoard, position),
+    },
+  })
+
+  const user = await db.user.read(currentPlayer)!
+
+  const resultData = {
+    position,
+    currentPlayer,
+    status: AttackResponseStatus.SHOT,
+  }
+
+  await user?.ws.send(
+    JSON.stringify(sendMessage(GameMessageType.ATTACK, resultData))
+  )
+}
+
+const handleKill = async (
+  db: ApplicationDB,
+  gameId: string,
+  currentPlayer: string,
+  opponentId: string,
+  targetBoard: Board,
+  position: {x: number; y: number},
+  targetShip: Ship
+) => {
+  const game = await db.game.read(gameId)!
+  if (!game) {
+    return
+  }
+
+  await db.game.update(gameId, {
+    boards: {
+      ...game.boards,
+      [opponentId]: getBoardAfterShot(AttackResult.KILL, targetBoard, position),
+    },
+  })
+
+  const nearbyCells = getNearbyCells(game.boards[opponentId]!, targetShip)
+
+  const user = await db.user.read(currentPlayer)!
+
+  const resultData = {
+    position,
+    currentPlayer,
+    status: AttackResponseStatus.KILLED,
+  }
+
+  await user?.ws.send(
+    JSON.stringify(sendMessage(GameMessageType.ATTACK, resultData))
+  )
+
+  for (const cell of nearbyCells) {
+    const {x, y} = cell
+
+    const resultData = {
+      position: {x, y},
+      currentPlayer,
+      status: AttackResponseStatus.MISS,
+    }
+
+    await user?.ws.send(
+      JSON.stringify(sendMessage(GameMessageType.ATTACK, resultData))
+    )
+  }
+
+  const boardAfterNearbyMisses = nearbyCells.reduce((acc, cell) => {
+    acc = getBoardAfterShot(AttackResult.KILL, acc, cell)
+    return acc
+  }, targetBoard)
+
+  await db.game.update(gameId, {
+    boards: {
+      ...game.boards,
+      [opponentId]: boardAfterNearbyMisses,
+    },
+  })
+}
+
+const switchTurn = async (
+  db: ApplicationDB,
+  gameId: string,
+  opponentId: string
+) => {
+  await db.game.update(gameId, {
+    currentPlayer: opponentId,
+  })
 }

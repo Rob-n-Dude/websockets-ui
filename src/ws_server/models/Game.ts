@@ -30,3 +30,19 @@ export interface Ship {
   type: ShipType
   length: number
 }
+
+export const getShipByCoordinates = (
+  ships: Ship[],
+  position: {x: number; y: number}
+): Ship | undefined => {
+  return ships.find((ship) => {
+    const {x, y} = ship.position
+    const {length, direction} = ship
+
+    if (direction) {
+      return x === position.x && y <= position.y && position.y < y + length
+    }
+
+    return y === position.y && x <= position.x && position.x < x + length
+  })
+}

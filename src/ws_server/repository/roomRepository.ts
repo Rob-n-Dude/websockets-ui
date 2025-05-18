@@ -41,7 +41,6 @@ class RoomRepository implements RoomRepositoryType {
 
   update(roomId: string, data: Partial<Room>): Promise<Room | null> {
     return new Promise<Room | null>((resolve) => {
-      console.log('this. roooooooms;', this.rooms)
       if (!this.rooms.has(roomId)) {
         resolve(null)
         return
@@ -49,7 +48,6 @@ class RoomRepository implements RoomRepositoryType {
 
       const roomData = this.rooms.get(roomId) as Room
       const updatedRoomData = {...roomData, ...data}
-      console.log('updatedRoomData', updatedRoomData)
       this.rooms.set(roomId, updatedRoomData)
       resolve(updatedRoomData)
     })

@@ -1,6 +1,5 @@
 import {ApplicationDB} from '../repository'
 import {ParsedMessage} from '../utils/parse'
-import {ExtendedWebSocket} from '../models/Socket'
 import {Ship} from '../models/Game'
 import {getBoardWithShips, isBoardEmpty} from '../models/Board'
 import {startGame} from './responses/startGame'
@@ -10,12 +9,7 @@ type dataType = {
   indexPlayer: string
 }
 
-export const addShips = async (
-  message: ParsedMessage,
-  db: ApplicationDB,
-  ws: ExtendedWebSocket
-) => {
-  console.log(!!ws)
+export const addShips = async (message: ParsedMessage, db: ApplicationDB) => {
   const {ships, indexPlayer} = message.data as dataType
 
   const user = await db.user.read(indexPlayer)

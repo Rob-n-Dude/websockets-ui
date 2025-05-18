@@ -26,7 +26,7 @@ export const handleMessage = async (
     case RoomMessageType.ADD_USER_TO_ROOM:
       return await addUserToTheRoom(parsedMessage, db, ws)
     case GameMessageType.ADD_SHIPS:
-      return await addShips(parsedMessage, db, ws)
+      return await addShips(parsedMessage, db)
     case GameMessageType.ATTACK:
       return await attack(parsedMessage, db)
     // case GameMessageType.CREATE_GAME:
