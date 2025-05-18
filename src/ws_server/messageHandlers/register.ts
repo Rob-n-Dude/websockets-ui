@@ -34,5 +34,5 @@ export const register = async (
     error: false,
   }
 
-  await ws.send(JSON.stringify(sendMessage(message.type, sanitizedData)))
+  ws.send(JSON.stringify(sendMessage(message.type, sanitizedData)))
 }

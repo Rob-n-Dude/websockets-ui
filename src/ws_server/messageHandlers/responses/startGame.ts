@@ -15,7 +15,7 @@ export const startGame = async ({gameId, db}: StartGameArgs) => {
     return
   }
 
-  for await (const userId of game.users) {
+  for (const userId of game.users) {
     const user = await db.user.read(userId)
     if (!user) {
       return
@@ -26,7 +26,7 @@ export const startGame = async ({gameId, db}: StartGameArgs) => {
       currentPlayerIndex: game.currentPlayer,
     }
 
-    await user.ws.send(
+    user.ws.send(
       JSON.stringify(sendMessage(GameMessageType.START_GAME, data))
     )
 

@@ -20,7 +20,7 @@ export const createGame = async ({roomId, db}: CreateGameArgs) => {
     id: gameId,
   })
 
-  for await (const userId of users) {
+  for (const userId of users) {
     const user = await db.user.read(userId)
     await db.user.update(userId, {
       gameId: gameId,
@@ -31,7 +31,7 @@ export const createGame = async ({roomId, db}: CreateGameArgs) => {
       idPlayer: userId,
     }
 
-    await user?.ws.send(
+    user?.ws.send(
       JSON.stringify(sendMessage(GameMessageType.CREATE_GAME, data))
     )
   }

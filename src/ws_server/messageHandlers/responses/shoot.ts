@@ -114,7 +114,7 @@ const handleMiss = async (
     status: AttackResponseStatus.MISS,
   }
 
-  for await (const player of game.users) {
+  for (const player of game.users) {
     const user = await db.user.read(player)!
 
     if (!user) {
@@ -154,7 +154,7 @@ const handleHit = async (
     status: AttackResponseStatus.SHOT,
   }
 
-  for await (const player of game.users) {
+  for (const player of game.users) {
     const user = await db.user.read(player)!
 
     if (!user) {
@@ -197,7 +197,7 @@ const handleKill = async (
   }
 
 
-  for await (const player of game.users) {
+  for (const player of game.users) {
     const user = await db.user.read(player)!
     
     if (!user) {
@@ -218,7 +218,7 @@ const handleKill = async (
       status: AttackResponseStatus.MISS,
     }
 
-    for await (const player of game.users) {
+    for (const player of game.users) {
       const user = await db.user.read(player)!
       
       if (!user) {

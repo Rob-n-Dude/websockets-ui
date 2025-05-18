@@ -18,13 +18,13 @@ export const turn = async ({db, gameId}: TurnArguments) => {
     currentPlayer: game.currentPlayer,
   }
 
-  for await (const userId of game.users) {
+  for (const userId of game.users) {
     const user = await db.user.read(userId)
 
     if (!user || !user.ws) {
       continue
     }
 
-    await user.ws.send(JSON.stringify(sendMessage(GameMessageType.TURN, data)))
+    user.ws.send(JSON.stringify(sendMessage(GameMessageType.TURN, data)))
   }
 }
