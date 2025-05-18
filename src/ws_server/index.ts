@@ -15,8 +15,11 @@ export const createWebSocketServer = (port: number) => {
     ws.on('message', async (message: Buffer) => {
       const parsedMessage = parse(message)
       console.log('Received message:', parsedMessage)
-
-      await handleMessage(parsedMessage, ws as unknown as ExtendedWebSocket)
+      try {
+        await handleMessage(parsedMessage, ws as unknown as ExtendedWebSocket)
+      } catch (error) {
+        console.error('Error handling message:', error)
+      }
     })
 
     ws.on('close', async () => {
@@ -26,7 +29,7 @@ export const createWebSocketServer = (port: number) => {
   })
 
   wsServer.on('error', (error) => {
-    console.error('WebSocket error:', error)
+    console.error('WebSocketServer error:', error)
   })
 
   wsServer.on('listening', () => {
