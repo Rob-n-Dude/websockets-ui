@@ -37,6 +37,11 @@ export const attack = async (message: ParsedMessage, db: ApplicationDB) => {
   const canShoot = canShootAtCell(targetBoard, x, y)
 
   if (!canShoot) {
+    await turn({
+      db,
+      gameId: user.gameId,
+    })
+
     return
   }
 
