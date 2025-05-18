@@ -13,6 +13,8 @@ export const addUserToTheRoom = async (
   ws: ExtendedWebSocket
 ) => {
   const userId = ws._userId
+  console.log('addUserToTheRoom', userId)
+  console.log('message', message)
   const {indexRoom} = message.data as AddToRoomData
 
   return await bookRoom({

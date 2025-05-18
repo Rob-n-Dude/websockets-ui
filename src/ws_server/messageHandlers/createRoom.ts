@@ -20,9 +20,11 @@ export const createRoom = async (
   const id = randomUUID()
   await db.room.create(id)
 
-  return await bookRoom({
+  await bookRoom({
     roomId: id,
     userId: ws._userId,
     db,
   })
+
+  return id
 }

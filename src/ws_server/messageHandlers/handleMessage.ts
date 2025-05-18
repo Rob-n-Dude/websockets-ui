@@ -12,6 +12,7 @@ import {login} from './login'
 import {addShips} from './addShips'
 import {attack} from './attack'
 import {randomAttack} from './randomAttack'
+import {createBot} from '../bot/createBot'
 
 export const handleMessage = async (
   parsedMessage: ParsedMessage,
@@ -32,6 +33,8 @@ export const handleMessage = async (
       return await attack(parsedMessage, db)
     case GameMessageType.RANDOM_ATTACK:
       return await randomAttack(parsedMessage, db)
+    case GameMessageType.SINGLE_PLAY:
+      return await createBot(db, ws)
     default:
       throw new Error(`Unknown message type: ${type}`)
   }

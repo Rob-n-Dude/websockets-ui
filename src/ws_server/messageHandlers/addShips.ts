@@ -1,8 +1,8 @@
 import {ApplicationDB} from '../repository'
 import {ParsedMessage} from '../utils/parse'
-import {Ship} from '../models/Game'
 import {getBoardWithShips, isBoardEmpty} from '../models/Board'
 import {startGame} from './responses/startGame'
+import {Ship} from '../models/Ship'
 
 type dataType = {
   ships: Ship[]
@@ -13,6 +13,7 @@ export const addShips = async (message: ParsedMessage, db: ApplicationDB) => {
   const {ships, indexPlayer} = message.data as dataType
 
   const user = await db.user.read(indexPlayer)
+
   if (!user || !user.gameId) {
     return
   }

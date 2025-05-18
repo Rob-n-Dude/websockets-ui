@@ -11,6 +11,7 @@ export enum GameMessageType {
   FINISH = 'finish',
   ADD_SHIPS = 'add_ships',
   UPDATE_WINNERS = 'update_winners',
+  SINGLE_PLAY = 'single_play',
 }
 
 export enum RoomMessageType {

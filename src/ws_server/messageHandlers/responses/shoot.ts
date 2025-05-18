@@ -10,12 +10,12 @@ import {
   AttackResponseStatus,
   AttackResult,
   getShipByCoordinates,
-  Ship,
 } from '../../models/Game'
 import {ApplicationDB} from '../../repository'
 import {sendMessage} from '../../utils/send'
 import {GameMessageType} from '../../constants/messageType'
 import {finishGame} from './finishGame'
+import {Ship} from '../../models/Ship'
 
 type ShootArgs = {
   db: ApplicationDB

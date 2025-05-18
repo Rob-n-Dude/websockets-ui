@@ -1,4 +1,5 @@
 import {Board} from './Board'
+import {Ship} from './Ship'
 
 export interface Game {
   id: string
@@ -7,8 +8,6 @@ export interface Game {
   ships: Record<string, Ship[]>
   currentPlayer: string
 }
-
-export type ShipType = 'huge' | 'large' | 'medium' | 'small'
 
 export enum AttackResult {
   HIT = 'hit',
@@ -20,15 +19,6 @@ export enum AttackResponseStatus {
   MISS = 'miss',
   KILLED = 'killed',
   SHOT = 'shot',
-}
-export interface Ship {
-  position: {
-    x: number
-    y: number
-  }
-  direction: boolean
-  type: ShipType
-  length: number
 }
 
 export const getShipByCoordinates = (

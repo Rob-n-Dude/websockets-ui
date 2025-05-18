@@ -1,8 +1,9 @@
-import {AttackResult, Ship} from './Game'
+import {AttackResult} from './Game'
+import {Ship} from './Ship'
 
 export type Board = string[][]
 
-enum BoardCell {
+export enum BoardCell {
   EMPTY = '',
   SHIP = 'S',
   HIT = 'X',
