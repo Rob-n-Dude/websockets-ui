@@ -21,7 +21,7 @@ export const createBot = async (
 
   bot.on(Event.REGISTER, async () => {
     const roomId = await createRoom({} as ParsedMessage, db, ws)
-    bot.joinToRoom(roomId!)
+    bot.joinToRoom(roomId)
   })
 
   bot.on(Event.CREATE_GAME, () => {

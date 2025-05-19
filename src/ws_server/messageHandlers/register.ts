@@ -1,7 +1,7 @@
 import {randomUUID} from 'node:crypto'
 import {ApplicationDB} from '../repository'
 import {ParsedMessage} from '../utils/parse'
-import {User} from '../models/User'
+import {isUserDataValid, User} from '../models/User'
 import {ExtendedWebSocket} from '../models/Socket'
 import {sendMessage} from '..//utils/send'
 
@@ -19,6 +19,12 @@ export const register = async (
 
   const id = randomUUID()
   ws._userId = id
+
+  const isValid = isUserDataValid(data)
+
+  if (!isValid) {
+    return
+  }
 
   const createdUser = await db.user.create({
     id,

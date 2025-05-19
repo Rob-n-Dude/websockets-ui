@@ -93,7 +93,9 @@ export class Bot extends EventEmitter {
     console.log('Bot: Sending random attack')
     this.send(GameMessageType.RANDOM_ATTACK, dataToSend)
   }
+
   public joinToRoom(roomId: string) {
+    console.log('Bot: Joining room', roomId)
     this.send(RoomMessageType.ADD_USER_TO_ROOM, {indexRoom: roomId})
   }
 
@@ -105,6 +107,7 @@ export class Bot extends EventEmitter {
       indexPlayer: this.id,
     }
 
+    console.log('Bot: Adding ships room', ships)
     this.send(GameMessageType.ADD_SHIPS, dataToSend)
   }
 
